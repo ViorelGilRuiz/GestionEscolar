@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreAlumnoRequest;
-use App\Http\Requests\UpdateAlumnoRequest;
 use App\Models\Alumno;
-use Illuminate\Support\Facades\Schema;
+use App\Models\Idioma;
+use Illuminate\Http\Request;
 
 class AlumnoController extends Controller
 {
@@ -14,14 +13,8 @@ class AlumnoController extends Controller
      */
     public function index()
     {
-        $campos = Schema::getColumnListing("alumnos");
-        $exclude=["created_at","updated_at"];
-        $campos= array_diff($campos,$exclude);
-        $filas = Alumno::select($campos)->get();
-
-       return view('alumnos.index', compact('filas',"campos"));
-
-        //
+        $alumnos = Alumno::with('idiomas')->paginate(10);
+        return view('alumnos.index', compact('alumnos'));
     }
 
     /**
@@ -30,29 +23,40 @@ class AlumnoController extends Controller
     public function create()
     {
         return view('alumnos.create');
-        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAlumnoRequest $request)
+    public function store(Request $request)
     {
-        $datos = request()->input();
-        $alumno = new Alumno($datos);
-        $alumno->save();
-        if (request()->has("idiomas")) {
-            $idiomas=collect(request()->input('idiomas'));
-            $idiomas->each(fn($idioma) => $alumno->idiomas()->create([
-                "idioma"=>$idioma,
-                "nivel" =>request()->input("nivel")[$idioma],
-                "titulo"=>request()->input("titulo")[$idioma],
-            ])
-            );
-       }
-        session()->flash('mensaje','Alumno creado');
-        return redirect()->route('alumnos.index');
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'email' => 'required|email|unique:alumnos,email',
+            'edad' => 'required|integer|min:0|max:120',
+            'idiomas' => 'array',
+            'nivel' => 'array',
+            'titulo' => 'array',
+        ]);
+
+        $alumno = Alumno::create([
+            'nombre' => $request->nombre,
+            'email' => $request->email,
+            'edad' => $request->edad,
+        ]);
+
+        if ($request->has('idiomas')) {
+            foreach ($request->idiomas as $idioma) {
+                $alumno->idiomas()->create([
+                    'nombre' => $idioma,
+                    'nivel' => $request->nivel[$idioma] ?? 'Básico',
+                    'titulo' => $request->titulo[$idioma] ?? 'A1',
+                ]);
+            }
+        }
+
+        return redirect()->route('alumnos.index')
+            ->with('success', __('Alumno creado correctamente'));
     }
 
     /**
@@ -61,7 +65,6 @@ class AlumnoController extends Controller
     public function show(Alumno $alumno)
     {
         return view('alumnos.show', compact('alumno'));
-        //
     }
 
     /**
@@ -69,16 +72,45 @@ class AlumnoController extends Controller
      */
     public function edit(Alumno $alumno)
     {
-        return view ('alumnos.edit', compact('alumno'));
-        //
+        return view('alumnos.edit', compact('alumno'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAlumnoRequest $request, Alumno $alumno)
+    public function update(Request $request, Alumno $alumno)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'email' => 'required|email|unique:alumnos,email,' . $alumno->id,
+            'edad' => 'required|integer|min:0|max:120',
+            'idiomas' => 'array',
+            'nivel' => 'array',
+            'titulo' => 'array',
+        ]);
+
+        $alumno->update([
+            'nombre' => $request->nombre,
+            'email' => $request->email,
+            'edad' => $request->edad,
+        ]);
+
+        // Eliminar idiomas existentes
+        $alumno->idiomas()->delete();
+
+        // Agregar nuevos idiomas
+        if ($request->has('idiomas')) {
+            foreach ($request->idiomas as $idioma) {
+                $alumno->idiomas()->create([
+                    'nombre' => $idioma,
+                    'nivel' => $request->nivel[$idioma] ?? 'Básico',
+                    'titulo' => $request->titulo[$idioma] ?? 'A1',
+                ]);
+            }
+        }
+
+        return redirect()->route('alumnos.index')
+            ->with('success', __('Alumno actualizado correctamente'));
     }
 
     /**
@@ -87,8 +119,7 @@ class AlumnoController extends Controller
     public function destroy(Alumno $alumno)
     {
         $alumno->delete();
-        session()->flash('mensaje','Alumno eliminado');
-        return redirect()->route('alumnos.index');
-        //
+        return redirect()->route('alumnos.index')
+            ->with('success', __('Alumno eliminado correctamente'));
     }
 }

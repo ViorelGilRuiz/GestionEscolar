@@ -1,20 +1,17 @@
 <header class="md:h-10v bg-header flex flex-row  md:flex-row px-3  justify-between items-center p-3">
     <img class="w-1/3 md:w-1/12 max-h-full p-1" src="{{asset ("images/logo.png")}}" alt="logo">
-    <h1 class=" hidden md:block
-    text-gray-700 text-7xl">{{__("Gestión de instituto")}}</h1>
+    <h1 class="hidden md:block text-gray-700 text-7xl">{{__("auth.Institute Management")}}</h1>
     <div class="hidden md:flex flex-row text-white space-x-2">
         @auth
             {{auth()->user()->name}}
             <form action="{{route("logout")}}" method="post">
                 @csrf
-                <button type="submit" class="btn btn-glass">Logout</button>
+                <button type="submit" class="btn btn-glass">{{ __('auth.Logout') }}</button>
             </form>
         @endauth
         @guest
-                <a class="btn btn-glass" href="login">{{__("Login")}}</a>
-                <a class="btn btn-glass" href="register">{{__("Register")}}</a>
-
-
+                <a class="btn btn-glass" href="login">{{ __('auth.Login') }}</a>
+                <a class="btn btn-glass" href="register">{{ __('auth.Register') }}</a>
         @endguest
         <x-layouts.lang />
     </div>
@@ -29,16 +26,13 @@
             {{auth()->user()->name}}
             <form action="{{route("logout")}}" method="post">
                 @csrf
-                <button type="submit" class="btn btn-glass">Logout</button>
+                <button type="submit" class="btn btn-glass">{{ __('auth.Logout') }}</button>
             </form>
         @endauth
         @guest
-                <a class="btn btn-glass" href="login">Login</a>
-                <a class="btn btn-glass" href="register">Register</a>
-
-
+                <a class="btn btn-glass" href="login">{{ __('auth.Login') }}</a>
+                <a class="btn btn-glass" href="register">{{ __('auth.Register') }}</a>
         @endguest
         </div>
     </div>
-
 </header>

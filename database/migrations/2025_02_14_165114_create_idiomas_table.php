@@ -13,12 +13,10 @@ return new class extends Migration
     {
         Schema::create('idiomas', function (Blueprint $table) {
             $table->id();
-            $table->string('idioma');
-            $table->foreignId("alumno_id")->constrained()
-            ->onDelete("cascade")
-            ->onUpdate("cascade");
-            $table->enum("nivel",["Alto","Medio","Básico"]);
-            $table->enum("titulo",["A1","A2","B1","B2","C1","C2"]);
+            $table->foreignId('alumno_id')->constrained()->onDelete('cascade');
+            $table->string('nombre');
+            $table->string('nivel');
+            $table->string('titulo');
             $table->timestamps();
         });
     }

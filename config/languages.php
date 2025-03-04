@@ -1,11 +1,25 @@
 <?php
+
 return [
-    "es"=>["name"=>"Español",
-           "flag"=>'🇪🇸'],
-    "fr"=>["name"=>"France",
-           "flag"=>'🇫🇷'],
-    "en"=>["name"=>"English",
-           "flag"=>'🇬🇧'],
+    'available' => [
+        'es' => [
+            'name' => 'Español',
+            'flag' => '🇪🇸'
+        ],
+        'en' => [
+            'name' => 'English',
+            'flag' => '🇬🇧'
+        ],
+        'fr' => [
+            'name' => 'Français',
+            'flag' => '🇫🇷'
+        ],
+        'de' => [
+            'name' => 'Deutsch',
+            'flag' => '🇩🇪'
+        ]
+    ],
+    'default' => 'es',
 ];
 
 ?>

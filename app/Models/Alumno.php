@@ -14,8 +14,18 @@ class Alumno extends Model
     protected $primaryKey = 'id';
     protected $timestamp = true;
 
-    protected $fillable = ["nombre","email","edad"];
+    protected $fillable = [
+        'nombre',
+        'email',
+        'edad'
+    ];
+
     public function idiomas(){
         return $this->hasMany(Idioma::class);
+    }
+
+    public function proyectos()
+    {
+        return $this->belongsToMany(Proyecto::class);
     }
 }

@@ -1,10 +1,14 @@
 <?php
+
 return [
-    "Francés",
-    "Inglés",
-    "Alemán",
-    "Italiano",
-    "Catalán",
-    "Eusquera",
-    "Gallego"
+    'Inglés',
+    'Francés',
+    'Alemán',
+    'Italiano',
+    'Portugués',
+    'Chino',
+    'Japonés',
+    'Ruso',
+    'Árabe',
+    'Español'
 ];

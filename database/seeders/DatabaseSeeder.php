@@ -24,5 +24,12 @@ class DatabaseSeeder extends Seeder
         $this::call([
             AlumnoSeeder::class,
         ]);
+
+        // Crear usuario por defecto
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@admin.com',
+            'password' => Hash::make('12345678'),
+        ]);
     }
 }
